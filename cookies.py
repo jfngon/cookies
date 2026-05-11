@@ -487,8 +487,8 @@ def tela_login():
         <div class='top-bora'>Bora Comer um Cookie? Porque Comer faz Bem!😊✨</div>
         <style>
             .top-bora{
-                position: fixed;
-                top: 55px;
+                position: relative;
+                top: 75px;
                 left: 0;
                 width: 100%;
                 z-index: 10000;
