@@ -19,7 +19,6 @@ if 'pagina' not in st.session_state:
 ADMIN_USER = "admin"
 ADMIN_SENHA = "admin@123"
 
-
 def mudar_pagina(nome):
     st.session_state['pagina'] = nome
     st.rerun()
@@ -91,7 +90,6 @@ def gerar_pdf_receita_bytes(receita: dict) -> bytes:
     nut = receita.get("nutricao", {}) or {}
     items = list(nut.items())
 
-    # Simples tabela (duas colunas)
     col_valor_x = margem_x + 260
     c.setFont("Helvetica-Bold", 10)
     c.drawString(margem_x, y, "Item")
@@ -112,9 +110,7 @@ def gerar_pdf_receita_bytes(receita: dict) -> bytes:
     buffer.seek(0)
     return buffer.read()
 
-
 def _quebrar_texto(texto: str, max_chars: int):
-    """Quebra texto simples para não estourar a linha no canvas."""
     if not texto:
         return []
 
@@ -131,7 +127,6 @@ def _quebrar_texto(texto: str, max_chars: int):
     if linha_atual:
         linhas.append(linha_atual)
     return linhas
-
 
 # --- BANCO DE RECEITAS ---
 RECEITAS = [
@@ -247,16 +242,13 @@ RECEITAS = [
     },
 ]
 
-
 # --- CSS GLOBAL ---
 st.markdown("""
     <style>
 
-    /* Remove espaçamento do topo mesmo em carregamentos iniciais */
     html, body { margin: 0 !important; padding: 0 !important; }
     #root { margin: 0 !important; padding: 0 !important; }
     div[data-testid="stAppViewContainer"] { margin-top: 0 !important; padding-top: 0 !important; }
-
 
 
     /* Fundo da tela */
@@ -269,30 +261,24 @@ st.markdown("""
     }
 
 
-    /* Remove TODA a barra branca do topo */
     #MainMenu { visibility: hidden !important; }
     header { visibility: hidden !important; height: 0 !important; }
     footer { visibility: hidden !important; }
 
-    /* Alguns elementos do Streamlit ainda reservam espaço (top padding) */
     [data-testid="stToolbar"] { display: none !important; }
     [data-testid="stDecoration"] { display: none !important; }
     [data-testid="stHeader"] { display: none !important; }
 
-    /* Zerar padding/margin do container principal para não sobrar faixa */
     .block-container { padding-top: 0 !important; margin-top: 0 !important; }
 
-    /* Caso exista um gap extra no topo */
     .stApp { padding-top: 0 !important; margin-top: 0 !important; }
 
-    /* Remove também altura mínima que pode criar “faixa” */
     section[data-testid="stVerticalBlock"] { padding-top: 0 !important; margin-top: 0 !important; }
     [data-testid="stMainBlockContainer"] { padding-top: 0 !important; margin-top: 0 !important; }
 
     /* Card do login */
     .login-wrapper { padding-top: 0 !important; margin-top: 0 !important; }
 
-    /* Avatar circular na tela de login */
     .avatar-wrapper {
         display: flex;
         justify-content: center;
@@ -325,10 +311,6 @@ st.markdown("""
         box-shadow: 0 4px 16px rgba(180,120,40,0.25) !important;
     }
 
-
-
-
-    /* Overlay fixo no topo para cobrir a faixa branca no modo login */
 .login-top-overlay {
         position: fixed !important;
         top: 0 !important;
@@ -351,7 +333,6 @@ st.markdown("""
         margin: 0 auto;
     }
 
-    /* Imagem circular com borda */
     .img-circular {
         display: flex;
         justify-content: center;
@@ -383,7 +364,6 @@ st.markdown("""
         color: #FFFFFF !important;
     }
 
-
     /* Inputs */
     .stTextInput > div > div > input {
         border: 2px solid #d4a86a !important;
@@ -399,7 +379,6 @@ st.markdown("""
     .stTextArea > div > textarea {
         font-size: 1.1em !important;
     }
-
 
     /* Botao primario - ENTRAR (caramelo cheio) */
     [data-testid="baseButton-primary"] {
@@ -477,11 +456,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# =============================================
 # TELA DE LOGIN
-# =============================================
 def tela_login():
-    # Texto fixo no topo para cobrir/compensar a faixa branca
     st.markdown(
         """
         <div class='top-bora'>Bora Comer um Cookie? Porque Comer faz Bem!😊✨</div>
@@ -504,7 +480,7 @@ def tela_login():
         """,
         unsafe_allow_html=True,
     )
-    # Força rerender após trocar para a tela inicial e reduz chance de “gap” persistir do layout anterior
+    
     st.empty()
 
     st.markdown("<div class='login-wrapper'>", unsafe_allow_html=True)
@@ -518,7 +494,6 @@ def tela_login():
 
         col_av1, col_av2, col_av3 = st.columns([1.2, 1, 1.2])
         with col_av2:
-            # Avatar: usa URL, mas com fallback para evitar “não aparece” quando a imagem remota falha.
             avatar_url = "https://images.unsplash.com/photo-1608070734668-e74dc3dda037?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGNvb2tpZXN8ZW58MHx8MHx8fDA%3D"
             try:
                 st.image(avatar_url, width=110, caption="")
@@ -541,7 +516,6 @@ def tela_login():
 
         st.write("")
 
-        # Botoes lado a lado com type correto
         col_b1, col_b2 = st.columns(2)
         with col_b1:
             if st.button("ENTRAR", key="btn_entrar", type="primary", use_container_width=True):
@@ -600,13 +574,11 @@ def tela_login():
                 st.session_state["logged_in"] = True
                 mudar_pagina("home")
 
-        st.markdown("</div>", unsafe_allow_html=True)  # fecha login-card
+        st.markdown("</div>", unsafe_allow_html=True)  
 
-    st.markdown("</div>", unsafe_allow_html=True)  # fecha login-wrapper
+    st.markdown("</div>", unsafe_allow_html=True)  
 
-# =============================================
 # TELA DE CADASTRO
-# =============================================
 def tela_cadastro():
     st.markdown("<h2 class='centered-text'>Cadastro de Usuario</h2>", unsafe_allow_html=True)
     col_c1, col_c2, col_c3 = st.columns([1, 3, 1])
@@ -631,10 +603,7 @@ def tela_cadastro():
         if st.button("Voltar"):
             mudar_pagina('login')
 
-
-# =============================================
 # TELA DE RECEITAS
-# =============================================
 def tela_receitas():
     with st.sidebar:
         st.markdown("### Menu de Acesso")
@@ -688,7 +657,7 @@ def tela_receitas():
 
             st.rerun()
 
-        # Não renderiza a galeria/busca enquanto o relatório estiver aberto
+        
         st.stop()
 
     col1, col2, col3 = st.columns([3, 2, 1])
@@ -734,7 +703,6 @@ def tela_receitas():
 
     for receita in receitas_filtradas:
         with st.container():
-            # remove qualquer espaço branco potencial no topo do card
             st.markdown("<div class='recipe-card' style='margin-top:0; padding-top:0;'>", unsafe_allow_html=True)
 
 
@@ -764,7 +732,6 @@ def tela_receitas():
                 texto_feedback = st.text_area("O que achou da receita?", key=fk)
 
                 def _feedback_valido(texto: str) -> tuple[bool, str]:
-                    # Validação mínima apenas para não enviar vazio.
                     if not texto or not texto.strip():
                         return False, "Escreva um feedback antes de enviar."
                     return True, ""
@@ -774,7 +741,6 @@ def tela_receitas():
                     ok, msg = _feedback_valido(texto_atual)
                     if not ok:
                         st.error(msg)
-                        # garante que o texto continue no campo
                         st.session_state[fk] = texto_atual
                     else:
                         st.success("Feedback enviado! Obrigado 😊")
